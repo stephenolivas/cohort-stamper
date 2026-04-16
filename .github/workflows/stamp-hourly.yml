@@ -1,0 +1,27 @@
+name: Stamp Lead Cohort (hourly)
+
+on:
+  schedule:
+    # Every hour at :05 past the hour (avoids the top-of-hour GitHub Actions congestion)
+    - cron: '5 * * * *'
+  workflow_dispatch:  # allow manual runs from the Actions tab
+
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOSE_API_KEY: ${{ secrets.CLOSE_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run hourly stamper
+        run: python3 -u stamp_hourly.py
