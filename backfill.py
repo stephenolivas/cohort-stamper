@@ -34,7 +34,7 @@ def find_unstamped_leads():
 
     while True:
         data = api_get("/lead/", params={
-            "query": f"custom.{COHORT_FIELD}:null sort:date_created",
+            "query": f'custom.{COHORT_FIELD}:"" sort:date_created',
             "_fields": FIELDS,
             "_skip": skip,
             "_limit": limit,
