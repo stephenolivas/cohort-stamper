@@ -1,0 +1,41 @@
+name: Backfill Lead Cohort (manual)
+
+# Manual-only — the backfill is a one-shot operation. After it runs
+# successfully once, the hourly job maintains the field going forward.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (count only, no writes)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CLOSE_API_KEY: ${{ secrets.CLOSE_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run backfill
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python3 -u backfill.py --dry-run
+          else
+            python3 -u backfill.py
+          fi
