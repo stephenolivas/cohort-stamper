@@ -1,9 +1,6 @@
 name: Stamp Lead Cohort (hourly)
 
 on:
-  schedule:
-    # Every hour at :05 past the hour (avoids the top-of-hour GitHub Actions congestion)
-    - cron: '5 * * * *'
   workflow_dispatch:  # allow manual runs from the Actions tab
 
 jobs:
